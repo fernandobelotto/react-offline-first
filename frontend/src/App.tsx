@@ -1,12 +1,14 @@
 import axios from "axios"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useTransition } from "react"
 import { useOnline } from "./useOnline"
 import Spinner from './icons/spinner'
 import CloudOffline from "./icons/cloud-offline"
 import Cloud from "./icons/cloud"
 import CloudFailed from "./icons/cloud-failed"
-
+import debounce from 'lodash.debounce'
 const COUNTER = 'counter'
+
+const url = 'http://localhost:3000/'
 
 const icons: any = {
   'synchronizing': <Spinner />,
@@ -30,14 +32,16 @@ export default function App() {
   const increase = () => setCounter(counter + 1)
   const decrease = () => setCounter(counter - 1)
 
-  async function sync() {
+  const sync = async () =>  {
     if (!isOnline) {
       return setSyncState('offline')
     }
     localStorage.setItem(COUNTER, counter.toString())
     setSyncState('synchronizing')
     try {
-      await axios.post('http://localhost:3001/counter', { counter })
+      await axios.post(url, { counter })
+      const { data } = await axios.get(url)
+      setCounter(data?.counter)
     } catch (e) {
       return setSyncState('failed')
     }
@@ -50,7 +54,7 @@ export default function App() {
       setSyncState('offline')
     } else {
       sync()
-    }
+    } 
   }, [isOnline])
 
   // sync in startup
