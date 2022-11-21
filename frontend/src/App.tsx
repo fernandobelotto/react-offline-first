@@ -5,7 +5,6 @@ import Spinner from './icons/spinner'
 import CloudOffline from "./icons/cloud-offline"
 import Cloud from "./icons/cloud"
 import CloudFailed from "./icons/cloud-failed"
-import debounce from 'lodash.debounce'
 const COUNTER = 'counter'
 
 const url = 'http://localhost:3000/'
